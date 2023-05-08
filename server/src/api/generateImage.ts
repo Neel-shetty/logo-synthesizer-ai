@@ -8,24 +8,26 @@ export async function generateImage(req: Request, res: Response) {
   });
   const openai = new OpenAIApi(configuration);
 
-  console.log(process.env.OPENAI_API_KEY);
-  // const {} = req.params;
+  type inputType = {
+    shape: string;
+    color: string;
+    prompt: string;
+    style: string;
+  };
+
+  const input: inputType = req.body;
+  console.log(input);
   // const n: number = parseInt(numberOfIcons);
   if (process.env.MOCK_DALLE === "true") {
-    return new Array<string>(1).fill(base64Image);
+    res.json(base64Image);
+    return;
   } else {
-    const input = {
-      shape: "circle",
-      color: "red",
-      prompt: "an angry chicken",
-      style: "metallic",
-    };
     const response = await openai.createImage({
       prompt: `a modern ${input.shape} icon in ${input.color} of ${input.prompt}, ${input.style}, minimialistic, high quality, trending on art station, unreal engine graphics quality`,
       n: 1,
       size: "512x512",
       response_format: "b64_json",
     });
-    return res.json({ image: response.data.data[0] });
+    return res.json(response.data.data[0].b64_json);
   }
 }

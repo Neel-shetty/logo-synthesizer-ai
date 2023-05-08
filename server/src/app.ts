@@ -7,19 +7,16 @@ dotenv.config();
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+// app.use(bodyParser)
 
-app.get("/", (req, res) => {
-  res.json({ Hello: "test", world: "test" });
+app.post("/", (req, res) => {
+  console.log(req.body);
+  res.json(req.query);
 });
 
-app.get ("/generate-image", generateImage);
+app.post("/generate-image", generateImage);
 
 app.listen(port, () => {
   return console.log(`Express is listening at http://localhost:${port}`);
